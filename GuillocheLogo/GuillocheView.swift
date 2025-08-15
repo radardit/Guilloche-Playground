@@ -1,6 +1,6 @@
 //
 //  GuillocheView.swift
-//  cMail
+//  GuillocheLogo
 //
 //  Created by Daren Smith on 8/13/25.
 //
@@ -11,8 +11,6 @@ import SwiftUI
 private var baseH = 120.00
 private var baseW = 100.00
 
-
-// Lets bring in the Guilloche Params
 struct GuillocheView: View {
     private let guilloche = GuillocheConfig(
         lineWidth: 0.25,

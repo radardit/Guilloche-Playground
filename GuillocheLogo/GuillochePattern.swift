@@ -1,6 +1,6 @@
 //
 //  GuillochePattern.swift
-//  cMail
+//  GuillocheLogo
 //
 //  Created by Daren Smith on 8/13/25.
 //
@@ -72,41 +72,24 @@ extension Angle: Codable {
     }
 }
 
-/// A configuration model that controls the guilloché pattern's look and feel.
-public struct GuillocheConfig: Equatable, Hashable, Codable {
-    /// Stroke width for the pattern lines.
-    public var lineWidth: CGFloat
-    /// Number of petals (k in r(θ) = R + A cos(kθ)). Higher values = more petals.
-    public var petalCount: Int
-    /// Number of concentric rosette rings to draw outward from the center rosette.
-    public var rings: Int
-    /// Base spacing (in points) between consecutive rings.
-    public var ringSpacing: CGFloat
-    /// Base amplitude (in points) of the rosette wave for the innermost ring.
-    public var amplitude: CGFloat
-    /// Amplitude falloff multiplier per ring (0.0-1.0). 0.9 means each ring is 90% of prior amplitude.
-    public var amplitudeFalloff: CGFloat
-    /// Radius (in points) of the center rosette before the first oscillation.
-    public var centerRosetteRadius: CGFloat
-    /// Overall rotation (in radians or degrees via Angle) applied to the curve.
-    public var rotation: Angle
-    /// Stroke color for the pattern.
-    public var color: Color
-    /// Fraction of the min dimension used as the overall pattern half-size. 0.45 ≈ 10% margin.
-    public var marginScale: CGFloat
-    /// Boundary rectangle width scale relative to the circular budget radius.
-    public var rectWidthScale: CGFloat
-    /// Boundary rectangle height scale relative to the circular budget radius.
-    public var rectHeightScale: CGFloat
-    /// When true, use rectangle boundary mapping; when false, keep circular boundary.
-    public var useRectBoundary: Bool
-    /// When true, scales all rings so the outermost ring touches the boundary (fills container).
-    public var autoScaleToBoundary: Bool
-    /// Allow the pattern to overflow beyond the container’s inscribed circle; useful when clipping to a rectangle.
-    public var allowOverflowBeyondBoundary: Bool
-    /// When true, amplitude increases with ring index (center least, outermost most).
-    public var invert: Bool
 
+public struct GuillocheConfig: Equatable, Hashable, Codable {
+    public var lineWidth: CGFloat
+    public var petalCount: Int
+    public var rings: Int
+    public var ringSpacing: CGFloat
+    public var amplitude: CGFloat
+    public var amplitudeFalloff: CGFloat
+    public var centerRosetteRadius: CGFloat
+    public var rotation: Angle
+    public var color: Color
+    public var marginScale: CGFloat
+    public var rectWidthScale: CGFloat
+    public var rectHeightScale: CGFloat
+    public var useRectBoundary: Bool
+    public var autoScaleToBoundary: Bool
+    public var allowOverflowBeyondBoundary: Bool
+    public var invert: Bool
     public init(
         lineWidth: CGFloat = 0.75,
         petalCount: Int = 32,
@@ -146,10 +129,9 @@ public struct GuillocheConfig: Equatable, Hashable, Codable {
     public static let `default` = GuillocheConfig()
 }
 
-/// Geometry generator for guilloché paths.
+
+
 public enum GuillocheGeometry {
-    /// Returns a single rosette ring path for the given ring index.
-    /// Ring 0 is the center rosette.
     public static func ringPath(in rect: CGRect, ringIndex i: Int, config: GuillocheConfig) -> Path {
         let size = rect.size
         let center = CGPoint(x: rect.midX, y: rect.midY)
@@ -189,7 +171,7 @@ public enum GuillocheGeometry {
         let baseR = baseRRaw * scale
         let amp = ampRaw * scale
 
-        // For overflow, don’t reject big rings; otherwise keep within circleR
+        // For overflow, don’t reject big rings
         if !config.allowOverflowBeyondBoundary {
             let maxRadius = baseR + amp
             if maxRadius <= 0 || baseR - amp < 0 || maxRadius > circleR {
@@ -237,6 +219,8 @@ public enum GuillocheGeometry {
         return p
     }
 
+    
+    
     private static func rectangleBoundaryRadius(halfWidth a: CGFloat, halfHeight b: CGFloat, angle: CGFloat) -> CGFloat {
         let c = cos(angle)
         let s = sin(angle)
@@ -252,7 +236,8 @@ public enum GuillocheGeometry {
         return max(0, Rb)
     }
 
-    /// Returns a unified path containing all rings that fit within the rect.
+
+    
     public static func fullPath(in rect: CGRect, config: GuillocheConfig) -> Path {
         var p = Path()
         for i in 0..<config.rings {
